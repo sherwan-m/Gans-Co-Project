@@ -74,5 +74,39 @@ create table if not exists arrivals(
     foreign key (icao) references airports(icao)
 );
 
+drop table if exists hotels; 
+create table if not exists hotels(
+	id int, 
+    name text,
+    type varchar(50),
+	latitude float,
+    longitude float,
+    city_id int,
+    primary key (id), 
+    foreign key (city_id) references cities(city_id)
+);
 
-select * from cities;
+drop table if exists landmarks; 
+create table if not exists landmarks(
+	id int8, 
+    name text,
+    type varchar(50),
+	latitude float,
+    longitude float,
+    city_id int,
+    primary key (id), 
+    foreign key (city_id) references cities(city_id)
+    );
+
+drop table if exists transports; 
+create table if not exists transports(
+	id int, 
+    name text,
+    type varchar(50),
+	latitude float,
+    longitude float,
+    city_id int,
+    primary key (id), 
+    foreign key (city_id) references cities(city_id)
+    );
+    
