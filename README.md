@@ -106,8 +106,8 @@ SQLAlchemy is the simplest way to connect Python to any SQL. After installing it
 Our task now is to adapt the data collection scripts so that every time they are executed, the data they collect gets inserted into your local database.
 
 # code along:
-## Create a database
-Create a database in your SQL program of choice (I use MySQL-Workbench) by executing [create_db.sql](https://github.com/sherwan-m/Gans-Co-Project/blob/main/db-creation.sql)
+**Phase 1: Local pipeline**
+
 ## get_tomorrow():
 In this case we want to collect the information of arrival flights and the weather for tomorrow that we would have time to make decisions and apply them. and we made a function to generate tomorrow DateTime format. It returns three outputs:  tomorrow_start,  tomorrow_middle and  tomorrow_end. We will need them for exctract other information.
 
@@ -121,3 +121,39 @@ and it returns the resault as dataframe.
 
 ## get_citys_airports(cities_df,RapidAPI_key):
 we use the aerodatabox.p.rapidapi.com for each city to extract the airports information. easily we convert the json to pandas dataframe and reshape it how we like. we do this steps for all cities in cities_df, then we concat the information together and return it. 
+
+## get_arrival_flights(airports,RapidAPI_key):
+this function get the airports dataframe as input and by sending requsts for "aerodatabox.p.rapidapi.com/flights/airports/icao/" get next days arrival flights information for each airport. we convert that json to pandas dataframe.  we pick the part of data that we want. 
+and it returns the resault as dataframe.
+
+## get_citys_informations(cities_df, RapidAPI_key):
+this function get the cities dataframe as input and by sending requsts for "hotels4.p.rapidapi.com/" get information about hotels, landmarks and transpoerts for each city. we convert that json to pandas dataframe.  we pick the part of data that we want.  
+and it returns 3 dataframes: hotels_df, landmark_df and transport_df.
+
+## update_information(cities_list, con):
+After that we are able to collect all the data that we want, it is the time to save this in information in our data base.
+With the previous functions we are able to collect all the data that we want, it is the time to save this in information in our database. We use sqlalchemy library to generate a connection and then we will push the data in database. but ther is some important things: when and how we want to update our tabels, we explained it at the each table describtion. 
+
+just a quick reminder:
+cities, airports, hotels, transports and landmark : when a new city added to the list
+weather, arrivals : every day
+
+at first we read the cities from sql data base, and chek if a new(s) city added to list.
+if ther is new city, we will get the information for the cities, airports, hotels, transports and landmark table, we will push the new data in them. 
+then again we read cities and air ports from database and we get the information for tommorrow for the arrivals and weather, and push them in to weather and arrivals tabels.
+
+here the **Phase 1: Local pipeline** is finished, its works nice, i tried to manage the errors, its not perfect right now but i'll try to make it better.
+its really important to catch all bugs and errors, because we make it automatic. our code had to have no crush. 
+
+
+**Phase 2: Cloud Pipeline**
+
+## Transfer all these functions and database to cloud
+* Create an account at [Amazon Web Services](https://aws.amazon.com)
+* Create a new SQL database in your AWS dashboard
+* Copy the contents of aws_lambda_function.py into a lambda function, and replace the placeholders in the SQL connection and the API-Calls with the credentials of your new database
+* Create an event-trigger using Amazon Event Bridge to schedule regular execution of the lambda function.
+
+##Contact
+* [https://github.com/sherwan-m](https://github.com/sherwan-m)
+* [sherwan.mohamadyani@gmail.com](mailto:sherwan.mohamadyani@gmail.com)
