@@ -1,5 +1,5 @@
 # Gans-Co-Project
-Data engeernig, pipeline, python, AWS, API, ...
+Technologies used: Data engineering, pipeline, python, AWS, API, ...
 
 ![Data-pipeline](https://user-images.githubusercontent.com/56586631/183856686-7563d229-0bfd-45a5-82f1-a5417b5f54d2.png)
 
@@ -109,41 +109,41 @@ Our task now is to adapt the data collection scripts so that every time they are
 **Phase 1: Local pipeline**
 
 ## get_tomorrow():
-In this case we want to collect the information of arrival flights and the weather for tomorrow that we would have time to make decisions and apply them. and we made a function to generate tomorrow DateTime format. It returns three outputs:  tomorrow_start,  tomorrow_middle and  tomorrow_end. We will need them for exctract other information.
+In this case we want to collect the information of arrival flights and the weather for tomorrow that we would have time to make decisions and apply them. And we made a function to generate tomorrow DateTime format. It returns three outputs:  tomorrow_start,  tomorrow_middle and  tomorrow_end. We will need them for exctract other information.
 
 ## get_cities(cities_list,RapidAPI_key):
-we use the wikipedia page for each city to extract the wikiid and mayor name. BeautifulSoup is really helpful to do this scraping. and after that we send a requist to "wft-geo-db.p.rapidapi.com" and take the information for the city. easily we convert the json to pandas dataframe and reshape it how we like. we do this steps for all cities in input list, then we concat the information together and return it.
+We use the wikipedia page for each city to extract the wikiid and mayor name. BeautifulSoup is really helpful to do this scraping. And after that we send a requist to "wft-geo-db.p.rapidapi.com" and take the information for the city. Easily we convert the json to pandas dataframe and reshape it how we like. We do this steps for all cities in input list, then we concat the information together and return it.
 
 ## weather_forcast(cities_df,openweather_api_key):
-this function get the cities dataframe as input and by sending requsts for "api.openweathermap.org" get forecast information for next 5 days in 3 hours timeslides. then we make a dictionarys for each city and add that part is usefull for us of the json of information. and then we append the dictionaries in a list.  we convert that list of dictionarys to pandas dataframe.  
-then we use the tomorrow function and a query to extract just tomorow information.
-and it returns the resault as dataframe.
+This function get the cities dataframe as input and by sending requsts for "api.openweathermap.org" get forecast information for next 5 days in 3 hours timeslides. Then we make a dictionarys for each city and add that part is usefull for us of the json of information. And then we append the dictionaries in a list. We convert that list of dictionarys to pandas dataframe.  
+Then we use the tomorrow function and a query to extract just tomorow information.
+And it returns the resault as dataframe.
 
 ## get_citys_airports(cities_df,RapidAPI_key):
-we use the aerodatabox.p.rapidapi.com for each city to extract the airports information. easily we convert the json to pandas dataframe and reshape it how we like. we do this steps for all cities in cities_df, then we concat the information together and return it. 
+We use the aerodatabox.p.rapidapi.com for each city to extract the airports information. Easily we convert the json to pandas dataframe and reshape it how we like. We do this steps for all cities in cities_df, then we concat the information together and return it. 
 
 ## get_arrival_flights(airports,RapidAPI_key):
-this function get the airports dataframe as input and by sending requsts for "aerodatabox.p.rapidapi.com/flights/airports/icao/" get next days arrival flights information for each airport. we convert that json to pandas dataframe.  we pick the part of data that we want. 
-and it returns the resault as dataframe.
+This function get the airports dataframe as input and by sending requsts for "aerodatabox.p.rapidapi.com/flights/airports/icao/" get next days arrival flights information for each airport. We convert that json to pandas dataframe. We pick the part of data that we want. 
+And it returns the resault as dataframe.
 
 ## get_citys_informations(cities_df, RapidAPI_key):
-this function get the cities dataframe as input and by sending requsts for "hotels4.p.rapidapi.com/" get information about hotels, landmarks and transpoerts for each city. we convert that json to pandas dataframe.  we pick the part of data that we want.  
-and it returns 3 dataframes: hotels_df, landmark_df and transport_df.
+This function get the cities dataframe as input and by sending requsts for "hotels4.p.rapidapi.com/" get information about hotels, landmarks and transpoerts for each city. We convert that json to pandas dataframe. We pick the part of data that we want.  
+And it returns 3 dataframes: hotels_df, landmark_df and transport_df.
 
 ## update_information(cities_list, con):
 After that we are able to collect all the data that we want, it is the time to save this in information in our data base.
-With the previous functions we are able to collect all the data that we want, it is the time to save this in information in our database. We use sqlalchemy library to generate a connection and then we will push the data in database. but ther is some important things: when and how we want to update our tabels, we explained it at the each table describtion. 
+With the previous functions we are able to collect all the data that we want, it is the time to save this in information in our database. We use sqlalchemy library to generate a connection and then we will push the data in database. But ther is some important things: when and how we want to update our tabels, we explained it at the each table describtion. 
 
-just a quick reminder:
-cities, airports, hotels, transports and landmark : when a new city added to the list
+Just a quick reminder:
+cities, airports, hotels, transports and landmark : When a new city added to the list
 weather, arrivals : every day
 
-at first we read the cities from sql data base, and chek if a new(s) city added to list.
-if ther is new city, we will get the information for the cities, airports, hotels, transports and landmark table, we will push the new data in them. 
-then again we read cities and air ports from database and we get the information for tommorrow for the arrivals and weather, and push them in to weather and arrivals tabels.
+At first we read the cities from sql data base, and chek if a new(s) city added to list.
+If ther is new city, we will get the information for the cities, airports, hotels, transports and landmark table, we will push the new data in them. 
+Then again we read cities and air ports from database and we get the information for tommorrow for the arrivals and weather, and push them in to weather and arrivals tabels.
 
-here the **Phase 1: Local pipeline** is finished, its works nice, i tried to manage the errors, its not perfect right now but i'll try to make it better.
-its really important to catch all bugs and errors, because we make it automatic. our code had to have no crush. 
+Here the **Phase 1: Local pipeline** is finished, its works nice, i tried to manage the errors, its not perfect right now but i'll try to make it better.
+Its really important to catch all bugs and errors, because we make it automatic. Our code had to have no crush. 
 
 
 **Phase 2: Cloud Pipeline**
@@ -154,6 +154,6 @@ its really important to catch all bugs and errors, because we make it automatic.
 * Copy the contents of aws_lambda_function.py into a lambda function, and replace the placeholders in the SQL connection and the API-Calls with the credentials of your new database
 * Create an event-trigger using Amazon Event Bridge to schedule regular execution of the lambda function.
 
-##Contact
+## Contact
 * [https://github.com/sherwan-m](https://github.com/sherwan-m)
 * [sherwan.mohamadyani@gmail.com](mailto:sherwan.mohamadyani@gmail.com)
