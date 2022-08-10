@@ -104,3 +104,19 @@ The EER diagram of our database will be :
 SQLAlchemy is the simplest way to connect Python to any SQL. After installing it with pip install SQLAlchemy, you will have to define the details to connect to your database. Then, the method pandas.DataFrame.to_sql() will do the rest for you, converting a DataFrame into a MySQL table in a single step. If the table does not exist yet in your database, it will be created, and you will not even have to worry about data types —they will be inferred from the existing data types in the DataFrame. You can always change the table from MySQLWorkbench using ALTER TABLE together with the MODIFY clause.
 
 Our task now is to adapt the data collection scripts so that every time they are executed, the data they collect gets inserted into your local database.
+
+# code along:
+
+## get_tomorrow():
+In this case we want to collect the information of arrival flights and the weather for tomorrow that we would have time to make decisions and apply them. and we made a function to generate tomorrow DateTime format. It returns three outputs:  tomorrow_start,  tomorrow_middle and  tomorrow_end. We will need them for exctract other information.
+
+## get_cities(cities_list,RapidAPI_key):
+we use the wikipedia page for each city to extract the wikiid and mayor name. BeautifulSoup is really helpful to do this scraping. and after that we send a requist to "wft-geo-db.p.rapidapi.com" and take the information for the city. easily we convert the json to pandas dataframe and reshape it how we like. we do this steps for all cities in input list, then we concat the information together and return it.
+
+## weather_forcast(cities_df,openweather_api_key):
+this function get the cities dataframe as input and by sending requsts for "api.openweathermap.org" get forecast information for next 5 days in 3 hours timeslides. then we make a dictionarys for each city and add that part is usefull for us of the json of information. and then we append the dictionaries in a list.  we convert that list of dictionarys to pandas dataframe.  
+then we use the tomorrow function and a query to extract just tomorow information.
+and it returns the resault as dataframe.
+
+## get_citys_airports(cities_df,RapidAPI_key):
+we use the aerodatabox.p.rapidapi.com for each city to extract the airports information. easily we convert the json to pandas dataframe and reshape it how we like. we do this steps for all cities in cities_df, then we concat the information together and return it. 
