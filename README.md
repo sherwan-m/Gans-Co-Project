@@ -106,7 +106,8 @@ SQLAlchemy is the simplest way to connect Python to any SQL. After installing it
 Our task now is to adapt the data collection scripts so that every time they are executed, the data they collect gets inserted into your local database.
 
 # code along:
-
+## Create a database
+Create a database in your SQL program of choice (I use MySQL-Workbench) by executing [create_db.sql](https://github.com/sherwan-m/Gans-Co-Project/blob/main/db-creation.sql)
 ## get_tomorrow():
 In this case we want to collect the information of arrival flights and the weather for tomorrow that we would have time to make decisions and apply them. and we made a function to generate tomorrow DateTime format. It returns three outputs:  tomorrow_start,  tomorrow_middle and  tomorrow_end. We will need them for exctract other information.
 
